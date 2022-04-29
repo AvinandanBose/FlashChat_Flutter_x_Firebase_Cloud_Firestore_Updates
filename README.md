@@ -1,2 +1,2 @@
-# FlashChat_Flutter_x_-Firebase_Cloud_Firestore_Updates
+# FlashChat_Flutter_x_Firebase_Cloud_Firestore_Updates
 It contains all the changes made to the Chat Application  .
