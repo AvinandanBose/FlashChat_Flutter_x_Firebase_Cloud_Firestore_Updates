@@ -8,37 +8,60 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin{
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with TickerProviderStateMixin {
   AnimationController? controller;
+  AnimationController? controller1;
 
+
+  void update(){
+    controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+
+    );
+    controller?.forward();
+    controller?.addListener(
+          () {
+        setState(() {});
+        print(controller?.value);
+      },
+    );
+
+  }
+  void update2(){
+    controller1 = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+      upperBound: 100,
+
+    );
+    controller1?.forward();
+    controller1?.addListener(
+          () {
+        setState(() {});
+        print(controller1?.value);
+      },
+    );
+  }
   @override
   void initState() {
     super.initState();
-     controller = AnimationController(
-      duration: const Duration(seconds: 1),
-        vsync: this,
-    );
-    controller?.forward();
-    controller?.addListener(()
-    {
-      setState(() {
+    update();
+    update2();
 
-      });
-      print(controller?.value);
-    },
-    );
-
-    // AnimationController controller = AnimationController(
-    //   duration: const Duration(seconds: 1),
-    //     vsync: this,
-    // );
-    // controller.forward();
-    // controller.addListener(()
-    // {
-    //   print(controller.value);
-    // },
-    // );
   }
+  // AnimationController controller = AnimationController(
+  //   duration: const Duration(seconds: 1),
+  //     vsync: this,
+  // );
+  // controller.forward();
+  // controller.addListener(()
+  // {
+  //   print(controller.value);
+  // },
+  // );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,9 +129,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                 ),
               ),
             ),
+            SizedBox(
+              height: 48.0,
+            ),
+            Container(
+             child:Center(
+               child:  Text(
+                 'Loading : ${controller1!.value.toInt()}%',
+                 style: TextStyle(
+                   fontSize: 20.0,
+                   fontWeight: FontWeight.w900,
+                 ),
+               ),
+             ),
+
+            ),
           ],
+
         ),
+
       ),
+
     );
   }
 }
