@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 24.0,
             ),
-            RoundButton(title: 'Register' , color: Colors.blueAccent, onPressed: (){})
+            RoundButton(title: 'Log In' , color: Colors.blueAccent, onPressed: (){})
           ],
         ),
       ),
