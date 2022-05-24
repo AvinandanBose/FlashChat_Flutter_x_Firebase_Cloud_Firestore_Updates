@@ -27,11 +27,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Hero(
-              tag: 'logo',
-              child: Container(
-                height: 200.0,
-                child: Image.asset('images/logo.png'),
+            Flexible(
+              child: Hero(
+                tag: 'logo',
+                child: Container(
+                  height: 200.0,
+                  child: Image.asset('images/logo.png'),
+                ),
               ),
             ),
             const SizedBox(
@@ -39,40 +41,46 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             TextField(
               keyboardType: TextInputType.emailAddress,
-              textAlign:TextAlign.center,
+              textAlign: TextAlign.center,
               onChanged: (value) {
                 email = value;
               },
-              decoration: kInputDecoration.copyWith(hintText: "Enter your Email"),
+              decoration:
+                  kInputDecoration.copyWith(hintText: "Enter your Email"),
             ),
             const SizedBox(
               height: 8.0,
             ),
             TextField(
               keyboardType: TextInputType.visiblePassword,
-              textAlign:TextAlign.center,
+              textAlign: TextAlign.center,
               obscureText: true,
               onChanged: (value) {
                 password = value;
               },
-              decoration: kInputDecoration.copyWith(hintText: "Enter your password"),
+              decoration:
+                  kInputDecoration.copyWith(hintText: "Enter your password"),
             ),
             const SizedBox(
               height: 24.0,
             ),
-            RoundButton(title:'Register', color: Colors.blueAccent, onPressed: ()async{
-              try {
-                final newUser = await _auth.createUserWithEmailAndPassword(
-                    email: email!, password: password!);
-                if(newUser != null){
-                  Navigator.pushNamed(context, ChatScreen.id);
+            RoundButton(
+              title: 'Register',
+              color: Colors.blueAccent,
+              onPressed: () async {
+                try {
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: email!, password: password!);
+                  if (newUser != null) {
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  }
+                } on Error catch (e) {
+                  print(e);
                 }
-              }on Error catch(e){
-                print(e);
-              }
-              // print(email);
-              // print(password);
-            },),
+                // print(email);
+                // print(password);
+              },
+            ),
           ],
         ),
       ),
