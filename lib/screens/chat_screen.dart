@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat_flutter_firebase/constants.dart';
 
-
+final _firestore = FirebaseFirestore.instance;
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
   @override
@@ -12,7 +12,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
 
-  final _firestore = FirebaseFirestore.instance;
+  final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   User? loggedInUser;
   String? messageText;
@@ -73,34 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: _firestore.collection('messages').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.lightBlueAccent,
-                ),
-              );
-            }
-            final messages = snapshot.data!.docs;
-            List<MessageBubble> messageWidgets = [];
-            for (var message in messages) {
-              final messageText = message.data()['text'];
-              final messageSender = message.data()['sender'];
-
-              final messageWidget = MessageBubble(text: messageText,sender: messageSender);
-
-              messageWidgets.add(messageWidget);
-            }
-            return Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-                children:messageWidgets,
-              )
-            );
-          },
-        ),
+            MessagesStream(),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -108,6 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: messageTextController,
                       onChanged: (value) {
                         messageText = value;
                         
@@ -139,6 +113,43 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
+class MessagesStream extends StatelessWidget {
+  const MessagesStream({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: _firestore.collection('messages').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+          );
+        }
+        final messages = snapshot.data!.docs;
+        List<MessageBubble> messageWidgets = [];
+        for (var message in messages) {
+          final messageText = message.data()['text'];
+          final messageSender = message.data()['sender'];
+
+          final messageWidget = MessageBubble(text: messageText,sender: messageSender);
+
+          messageWidgets.add(messageWidget);
+        }
+        return Expanded(
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+              children:messageWidgets,
+            )
+        );
+      },
+    );
+  }
+}
+
+
 class MessageBubble extends StatefulWidget {
   final String? sender;
   final String? text;
@@ -156,8 +167,13 @@ class _MessageBubbleState extends State<MessageBubble> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
-          Text('${widget.sender}'),
+          Text('${widget.sender}',
+          style: const TextStyle(
+            fontSize: 12.0,
+            color: Colors.black54,
+          ),),
          Material(
           borderRadius: BorderRadius.circular(50.0),
           elevation:5.0, //Drop Shadow to each text
