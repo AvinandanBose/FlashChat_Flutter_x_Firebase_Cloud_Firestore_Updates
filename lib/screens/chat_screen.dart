@@ -92,6 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   FlatButton(
                     onPressed: () {
                       //messageText + loggedInUser
+                      messageTextController.clear();
                       _firestore.collection('messages').add({
                         'text' : messageText,
                         'sender': loggedInUser?.email,
